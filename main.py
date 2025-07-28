@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Body
+from fastapi import FastAPI,Body,Header
 from typing import Optional
 from pydantic import BaseModel
 app =FastAPI()
@@ -28,4 +28,13 @@ async def create_user(user: User):
     return {
         "msg": "User created successfully",
         "user": user
+    }
+
+@app.get("/user/get-header")
+async def get_user_header(
+    accept:str = Header(None)
+):
+    print(accept)
+    return {
+        "Data" : "Done"
     }
