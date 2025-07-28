@@ -1,5 +1,6 @@
 from fastapi import FastAPI,Body
 from typing import Optional
+from pydantic import BaseModel
 app =FastAPI()
 
 @app.get("/")
@@ -17,3 +18,14 @@ async def greet(username,q:Optional[str]=None,data=Body()):
         "msg" : f"Good Morning {username}"
     }
 
+class User(BaseModel):
+    name: str
+    age: int
+    email: str
+
+@app.post("/user")
+async def create_user(user: User):
+    return {
+        "msg": "User created successfully",
+        "user": user
+    }
