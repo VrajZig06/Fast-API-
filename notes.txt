@@ -1,0 +1,32 @@
+
+****************** Vraj Makwana Notes ******************
+
+=> Notes: Make following Code to Read .env Files 
+
+    - pip3 install pydantic-settings     ---(*)
+
+    from pydantic_settings import BaseSettings,SettingsConfigDict
+    
+    class Settings(BaseSettings):
+        DATABASE_URL : str
+        model_config = SettingsConfigDict(
+            env_file="./env",
+            extra="ignore" 
+        )
+    
+    Config = Settings()
+
+    Access by : Config.DATABASE_URL --> postgres://.....
+
+
+=> Notes: When we want to run some event at the lifespan of App.like when server is starting and when       server is ending
+
+    from contextlib import asynccontextmanager
+
+    @asynccontextmanager
+    async def life_span(app:FastAPI):
+        print("Server is Starting...")
+        yield # this is for differentiate starting of app and ending of app
+        print("Server has been Stopped")
+
+    app = FastAPI(lifespan=life_span)
