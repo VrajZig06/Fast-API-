@@ -1,5 +1,67 @@
-from fastapi import FastAPI,Body,Header
-from typing import Optional
+from fastapi import FastAPI,Body,Header,HTTPException,status
+from typing import Optional,List
 from pydantic import BaseModel
 app =FastAPI()
 
+Books = []
+
+class Book(BaseModel):
+    id : int
+    name : str
+    author : str
+
+@app.get("/books")
+async def get_all_books():
+    return {
+        "data" : Books
+    }
+
+@app.post("/book/add")
+async def add_book(book : Book):
+    Books.append(book)
+    return {
+        "msg" : "Book Added Successfully",
+        "bookDetails" : book
+    }
+
+@app.patch("/book/{book_id}")
+async def update_book(book_id:int,new_data:Book):
+    if len(Books) > 0:
+        for index,book in enumerate(Books):
+            if book.id == book_id:
+                Books[index] = new_data
+                return {
+                    "msg" : "Books Record updated successfully!",
+                    "data" : Books[index]
+                }
+            else:
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Book Not Found")
+    else:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Books Not Available")
+    
+@app.delete("/book/{book_id}")
+async def update_book(book_id:int):
+    if len(Books) > 0:
+        for index,book in enumerate(Books):
+            if book.id == book_id:
+                Books.pop(index)
+                return HTTPException(status_code=200,detail="Book Updated Successfully!")
+            else:
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Book Not Found.")
+    else:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Books Not Available")
+    
+
+@app.get('/book/{id}')
+async def get_book_by_id(id):
+    if len(Books) > 0:
+        for book in Books:
+            if book.id == int(id):
+                return {
+                    "Data" : book
+                }
+            else:
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Book not Found")
+    else:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Books Not Available")
+    
