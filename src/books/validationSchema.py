@@ -1,5 +1,6 @@
 from pydantic import BaseModel,Field,field_validator
 from typing import Union,Optional,Any
+from datetime import date,datetime
 from uuid import UUID
 
 # validation Pydantic Class at the time of Add New Book 
@@ -52,3 +53,32 @@ class APIResponse(BaseModel):
     Status : int
     Msg: str
     Data : Any
+
+# Postgres Models Pydantic Models
+
+class BookSchema(BaseModel):
+    id : UUID
+    title : str
+    author : str
+    publisher : str
+    published_date : str
+    page_count : int
+    language : str
+    created_at : datetime
+    updated_at : datetime
+
+class BookCreate(BaseModel):
+    title : str 
+    author : str 
+    publisher : str 
+    published_date : date
+    page_count : int
+    language : str
+
+class BookUpdateSchema(BaseModel):
+    title : str 
+    author : str 
+    publisher : str 
+    page_count : int
+    language : str
+
